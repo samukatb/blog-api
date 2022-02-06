@@ -8,6 +8,7 @@ import {
 
 export class UserDto {
   @IsOptional()
+  @MinLength(2)
   @IsString()
   fullname: string;
 

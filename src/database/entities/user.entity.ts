@@ -1,4 +1,4 @@
-import { IsEmail } from 'class-validator';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 import { Post } from 'src/database/entities/post.entity';
 import {
   BaseEntity,
@@ -22,10 +22,12 @@ export class User extends BaseEntity {
   fullname: string;
 
   @Column()
+  @IsNotEmpty()
   @IsEmail()
   email: string;
 
   @Column()
+  @IsNotEmpty()
   password: string;
 
   @Column({ nullable: true })
