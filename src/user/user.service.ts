@@ -3,7 +3,6 @@ import { User } from 'src/database/entities/user.entity';
 import { UserDto } from './dto/user.dto';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
-import { getRepository } from 'typeorm';
 
 @Injectable()
 export class UserService {

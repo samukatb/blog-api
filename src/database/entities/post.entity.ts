@@ -3,6 +3,7 @@ import { User } from 'src/database/entities/user.entity';
 import {
   BaseEntity,
   Column,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -29,7 +30,7 @@ export class Post extends BaseEntity {
   @IsDate()
   created_at: Date;
 
-  @ManyToOne(() => User, (user) => user.id, { cascade: true, eager: true })
+  @ManyToOne(() => User, (user) => user.id, { eager: true })
   @JoinColumn()
   created_by: number;
 
@@ -37,13 +38,16 @@ export class Post extends BaseEntity {
   @IsDate()
   edited_at: Date;
 
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.id, { eager: true })
+  @JoinColumn()
   edited_by: number;
 
   @Column({ nullable: true })
   @IsDate()
+  @DeleteDateColumn()
   deleted_at: Date;
 
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.id, { eager: true })
+  @JoinColumn()
   deleted_by: number;
 }

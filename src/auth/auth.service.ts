@@ -19,6 +19,7 @@ export class AuthService {
     if (result) {
       return {
         access_token: this.jwtService.sign(result),
+        email: payload.email,
       };
     }
     throw new UnauthorizedException();

@@ -15,6 +15,13 @@ export class User extends BaseEntity {
     Object.assign(this, params);
   }
 
+  toJSON() {
+    delete this.id;
+    delete this.password;
+    delete this.email;
+    return this;
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 
