@@ -3,11 +3,13 @@ import { User } from 'src/database/entities/user.entity';
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity({ name: 'posts' })
@@ -23,27 +25,23 @@ export class Post extends BaseEntity {
   @Column()
   title: string;
 
-  @Column()
+  @Column({ type: 'longtext' })
   content: string;
 
-  @Column()
-  @IsDate()
+  @CreateDateColumn()
   created_at: Date;
 
   @ManyToOne(() => User, (user) => user.id, { eager: true })
   @JoinColumn()
   created_by: number;
 
-  @Column({ nullable: true })
-  @IsDate()
+  @UpdateDateColumn()
   edited_at: Date;
 
   @ManyToOne(() => User, (user) => user.id, { eager: true })
   @JoinColumn()
   edited_by: number;
 
-  @Column({ nullable: true })
-  @IsDate()
   @DeleteDateColumn()
   deleted_at: Date;
 

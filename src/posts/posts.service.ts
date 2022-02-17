@@ -12,7 +12,6 @@ export class PostsService {
   async create(createPostDto: CreatePostDto, userId: number) {
     const postData = new Post({
       ...createPostDto,
-      created_at: new Date(),
       created_by: userId,
     });
     return await this.postsRepo.create(postData);
@@ -50,7 +49,6 @@ export class PostsService {
     if (!post) {
       throw new HttpException('Post not found', HttpStatus.NO_CONTENT);
     }
-    post.deleted_at = new Date();
     post.deleted_by = userId;
     return await this.postsRepo.create(new Post({ ...post }));
   }
