@@ -1,4 +1,3 @@
-import { IsDate } from 'class-validator';
 import { User } from 'src/database/entities/user.entity';
 import {
   BaseEntity,

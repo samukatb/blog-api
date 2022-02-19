@@ -44,12 +44,15 @@ export class PostsService {
     return await this.postsRepo.create(new Post({ ...post }));
   }
 
-  async deletePost(postId: number, userId: number) {
+  async deletePost(postId: number, userId: number): Promise<Post> {
     const post = await this.postsRepo.findOne(postId);
     if (!post) {
       throw new HttpException('Post not found', HttpStatus.NO_CONTENT);
     }
+    if (post.deleted_at) {
+      throw new HttpException('Post already deleted', HttpStatus.BAD_REQUEST);
+    }
     post.deleted_by = userId;
-    return await this.postsRepo.create(new Post({ ...post }));
+    return await this.postsRepo.softDelete(post);
   }
 }

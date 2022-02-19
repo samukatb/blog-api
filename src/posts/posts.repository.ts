@@ -33,4 +33,8 @@ export class PostsRepository {
       where: { deleted_by: Not(IsNull()) },
     });
   }
+
+  async softDelete(post: Post) {
+    return await this.postsRepository.softRemove(post);
+  }
 }
