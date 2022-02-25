@@ -30,12 +30,6 @@ export class PostsController {
     return this.postsService.create(createPostDto, user);
   }
 
-  // Get without pagination
-  // @Get()
-  // get(@Query() queryParams?: FilterPostDto) {
-  //   return this.postsService.findFiltered(queryParams);
-  // }
-
   @Get(':id')
   findOne(@Param('id') postId: number) {
     return this.postsService.getSinglePost(postId);
