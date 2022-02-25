@@ -8,13 +8,17 @@ import {
   Param,
   Delete,
   Query,
+  ParseIntPipe,
+  DefaultValuePipe,
+  ParseBoolPipe,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { User } from 'src/utils';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { FilterPostDto } from './dto/filter-post.dto';
+import { Pagination } from 'nestjs-typeorm-paginate';
+import { Post as PostEntity } from 'src/database/entities/post.entity';
 
 @Controller('posts')
 export class PostsController {
@@ -26,10 +30,11 @@ export class PostsController {
     return this.postsService.create(createPostDto, user);
   }
 
-  @Get()
-  get(@Query() queryParams?: FilterPostDto) {
-    return this.postsService.findFiltered(queryParams);
-  }
+  // Get without pagination
+  // @Get()
+  // get(@Query() queryParams?: FilterPostDto) {
+  //   return this.postsService.findFiltered(queryParams);
+  // }
 
   @Get(':id')
   findOne(@Param('id') postId: number) {
@@ -50,5 +55,21 @@ export class PostsController {
   @Delete(':id')
   delete(@Param('id') postId: number, @User('id') userId: number) {
     return this.postsService.deletePost(postId, userId);
+  }
+
+  @Get('')
+  async index(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
+    @Query('deleted', new DefaultValuePipe(false), ParseBoolPipe)
+    deleted = false,
+  ): Promise<Pagination<PostEntity>> {
+    limit = limit > 10 ? 10 : limit;
+
+    return this.postsService.paginate(deleted, {
+      page,
+      limit,
+      route: 'http://localhost:3001/posts/',
+    });
   }
 }

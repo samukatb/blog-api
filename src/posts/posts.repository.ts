@@ -10,12 +10,6 @@ export class PostsRepository {
     private postsRepository: Repository<Post>,
   ) {}
 
-  async find(deleted?: boolean): Promise<Post[]> {
-    return await this.postsRepository.find({
-      withDeleted: deleted,
-    });
-  }
-
   async create(post: Post): Promise<Post> {
     return await this.postsRepository.save(post);
   }
@@ -36,5 +30,9 @@ export class PostsRepository {
 
   async softDelete(post: Post) {
     return await this.postsRepository.softRemove(post);
+  }
+
+  createQueryBuilder(query: string) {
+    return this.postsRepository.createQueryBuilder(query);
   }
 }

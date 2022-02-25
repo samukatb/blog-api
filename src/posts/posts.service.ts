@@ -1,7 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 import { Post } from 'src/database/entities/post.entity';
 import { CreatePostDto } from './dto/create-post.dto';
-import { FilterPostDto } from './dto/filter-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostsRepository } from './posts.repository';
 
@@ -15,10 +19,6 @@ export class PostsService {
       created_by: userId,
     });
     return await this.postsRepo.create(postData);
-  }
-
-  async findFiltered(queryParams?: FilterPostDto): Promise<Post[]> {
-    return await this.postsRepo.find(!!queryParams?.deleted);
   }
 
   async getSinglePost(id: number): Promise<Post> {
@@ -53,6 +53,19 @@ export class PostsService {
       throw new HttpException('Post already deleted', HttpStatus.BAD_REQUEST);
     }
     post.deleted_by = userId;
+    await this.postsRepo.create(new Post({ ...post }));
     return await this.postsRepo.softDelete(post);
+  }
+
+  async paginate(
+    deleted: boolean,
+    options: IPaginationOptions,
+  ): Promise<Pagination<Post>> {
+    const queryBuilder = this.postsRepo.createQueryBuilder('p');
+    deleted ? queryBuilder.withDeleted() : '';
+    queryBuilder.leftJoinAndSelect('p.created_by', 'created_by');
+    queryBuilder.orderBy('p.id', 'DESC');
+
+    return paginate<Post>(queryBuilder, options);
   }
 }
